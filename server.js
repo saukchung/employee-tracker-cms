@@ -24,7 +24,7 @@ const db = mysql.createConnection(
   console.log(`Connected to the courses_db database.`)
 );
 
-const options = ["view all departments", "view all roles", "view all employees", "add a department", "add a role", "add an employee", "update an employee role"];
+const options = ["view all departments", "view all roles", "view all employees", "add a department", "add a role", "add an employee", "update an employee role", "quit"];
 
 const init = async () => {
   const ans = await prompt({type: "list", name: "userChoice", message: "What would you like to do?", choices: options});
@@ -76,8 +76,19 @@ const init = async () => {
   })
   };
 
+  if(ans.userChoice === "add a department") {
+    const ans = await prompt({type: "input", name: "newDepartment", message: "What is the name of the new department?"});
+    db.query(`INSERT INTO departments (dep_name) VALUES ("${ans.newDepartment}")`, (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log(`New department ans has been added!`);
+    })
+  };
 
-init();
+
+  if (ans.userChoice === "quit") return console.log("Good Bye")
+  init();
 };
 
 init();
