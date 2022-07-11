@@ -62,11 +62,11 @@ const init = async () => {
     roles.title AS title, 
     departments.dep_name AS department, 
     roles.salary AS salary, 
-    manager.first_name as manager 
+    CONCAT(manager.first_name, ' ', manager.last_name) as manager 
     
     FROM employees JOIN roles ON employees.role_id = roles.id
     JOIN departments ON roles.department_id = departments.id 
-    JOIN employees AS manager ON employees.manager_id = manager.id `, (err, result) => {
+    LEFT JOIN employees AS manager ON employees.manager_id = manager.id `, (err, result) => {
     if (err) {
       console.log(err);
     }
