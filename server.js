@@ -8,10 +8,11 @@ const db = mysql.createConnection(
   {
     host: 'localhost',
     user: 'root',
-    password: 'whatismypassword',
+    // #### TYPE IN YOUR SQL PASSWORD HERE #####
+    password: '',
     database: 'cms_db'
   },
-  console.log(`Connected to the courses_db database.`)
+  console.log(`Connected to the cms_db database.`)
 );
 
 //Options available to users
