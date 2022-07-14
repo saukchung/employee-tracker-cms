@@ -1,7 +1,14 @@
+const express = require('express');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 const { prompt } = require("inquirer");
 
+const PORT = process.env.PORT || 3001;
+const app = express();
+
+// Express middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 // Connect to database
 const db = mysql.createConnection(
@@ -107,7 +114,7 @@ const init = async () => {
       if (err) {
         console.log(err);
       }
-      console.log(`New role ${ansAddDep.newRoleTitle} has been added!`);
+      console.log(`New department ans has been added!`);
     })
   };
 
@@ -132,7 +139,6 @@ const init = async () => {
       if (err) {
         console.log(err);
       }
-      managerOptionsArr.push({ name: "No Manager", value: null })
       for (i = 0; i < result.length; i++) {
         managerOptionsArr.push({ name: result[i].manager, value: result[i].id })
       }
@@ -146,41 +152,45 @@ const init = async () => {
     ]);
 
 
-    db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${ansAddDep.newEmployeeFirstName}", "${ansAddDep.newEmployeeLastName}", ${ansAddDep.newEmployeeRole}, ${ansAddDep.newEmployeeManager})`, (err, result) => {
+    db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${ansAddDep.newEmployeeFirstName}", "${ansAddDep.newEmployeeLastName}", ${ansAddDep.newEmployeeRole}, ${ansAddDep.newEmployeeRole})`, (err, result) => {
       if (err) {
         console.log(err);
       }
-      console.log(`New employee ${ansAddDep.newEmployeeFirstName} ${ansAddDep.newEmployeeLastName} has been added!`);
+      console.log(`New department ans has been added!`);
     })
   };
 
-  // // UPDATE AN EMPLOYEE ROLE
-  // if (ansMenu.userChoice === "update an employee role") {
-  //   db.query(`SELECT id AS value, CONCAT(employees.first_name, ' ', employees.last_name) as name FROM employees`, async (err, employees) => {
-  //     if (err) {
-  //       console.log(err);
-  //     } 
+  // UPDATE AN EMPLOYEE ROLE
+  if (ansMenu.userChoice === "update an employee role") {
+    db.query(`SELECT id AS value, CONCAT(employees.first_name, ' ', employees.last_name) as name FROM employees`, async (err, employees) => {
+      if (err) {
+        console.log(err);
+      } 
 
-  //     db.query('SELECT id AS value, title AS name FROM roles', async (err, roles) => {
-  //       if (err) {
-  //         console.log(err);
-  //       }
+      db.query('SELECT id AS value, title AS name FROM roles', async (err, roles) => {
+        if (err) {
+          console.log(err);
+        }
 
-  //       prompt([
-  //         { type: "list", name: "targetEmployee", choices: employees, message: "Which employee's role do you want to update?" },
-  //         { type: "list", name: "targetRole", choices: roles, message: "Which role do you want to assign the selected employee?"},
-  //       ])
+        prompt([
+          { type: "list", name: "targetEmployee", choices: employees, message: "Which employee's role do you want to update?" },
+          { type: "list", name: "targetRole", choices: roles, message: "Which role do you want to assign the selected employee?"},
+        ])
+        
+      //   db.query(`INSERT INTO roles (title, department_id, salary) VALUES ("${ansAddDep.newRoleTitle}", ${ansAddDep.newRoleDepartment}, ${ansAddDep.newRoleSalary})`, (err, result) => {
+      //     if (err) {
+      //       console.log(err);
+      //     }
+      //     console.log(`New department ans has been added!`);
 
-  //     //   db.query(`INSERT INTO roles (title, department_id, salary) VALUES ("${ansAddDep.newRoleTitle}", ${ansAddDep.newRoleDepartment}, ${ansAddDep.newRoleSalary})`, (err, result) => {
-  //     //     if (err) {
-  //     //       console.log(err);
-  //     //     }
-  //     //     console.log(`New department ans has been added!`);
+      //   })
+      })
+    })
 
-  //     //   })
-  //     })
-  //   })
-  // };
+
+
+
+  };
 
   // QUIT
   if (ansMenu.userChoice === "quit") return console.log("Good Bye")
@@ -190,3 +200,7 @@ const init = async () => {
 
 // Function is called here
 init();
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
